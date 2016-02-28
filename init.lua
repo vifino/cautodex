@@ -1,9 +1,16 @@
-return function()
+return mw.new(function()
 	if path:sub(1,1)~="/" then
 		return ""
 	end
 	if path:sub(-1,-1)~="/" then
 		path = path .. "/"
+	end
+
+	local appropriatepath = (fs.list and path) or var.webroot..path
+
+	if not (fs.exists or os.exists)(appropriatepath) then
+		context.Next()
+		return
 	end
 
 	local tbl=tag"table"[{class="index"}](
@@ -41,8 +48,8 @@ return function()
 		return s
 	end
 	local escapist = require("escapist")
-	local files, err = (fs.list or io.list)(path)
-	if err or #files == 0 then
+	local files, err = (fs.list or io.list)(appropriatepath)
+	if err then
 		context.Next()
 		return
 	end
@@ -196,4 +203,4 @@ return function()
 			body
 		)
 	))
-end
+end)
