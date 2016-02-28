@@ -6,7 +6,6 @@ return function()
 		path = path .. "/"
 	end
 
-	local current = path
 	local tbl=tag"table"[{class="index"}](
 		tag"thead"(
 			tag"tr"(
@@ -47,6 +46,7 @@ return function()
 		context.Next()
 		return
 	end
+	table.insert(files, 1, "..")
 	local options = {}
 	if not err then
 		for _, l in pairs(files) do
@@ -70,7 +70,7 @@ return function()
 			end
 		end
 		if not found then
-			local f=io.popen("stat -Lc %F\\\t%s\\\t%Y "..escapist.escape.shell(var.root.."/"..file))
+			local f=io.popen("stat -Lc %F\\\t%s\\\t%Y "..escapist.escape.shell(var.root..path..file))
 			local fmt=f:read"*a"
 			local t,s,d=fmt:match"^([^\t]*)\t([^\t]*)\t(.*)\n$"
 			if not t then error(fmt) end
@@ -79,7 +79,7 @@ return function()
 			tbl(
 				tag"tr"(
 					tag"td"(
-						tag"a"[{href=current..escapist.escape.url(file)}](
+						tag"a"[{href=path..escapist.escape.url(file)}](
 							file
 						)
 					),
