@@ -1,4 +1,4 @@
-return mw.new(function()
+return function()
 	if path:sub(1,1)~="/" then
 		return ""
 	end
@@ -203,4 +203,4 @@ return mw.new(function()
 			body
 		)
 	))
-end)
+end

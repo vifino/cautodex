@@ -1,4 +1,3 @@
 #!/usr/bin/env carbon
-local handler = require("init")
-print(handler)
-srv.DefaultRoute(handler)
+local cautodex = require("init")
+srv.DefaultRoute(mw.new(cautodex))
