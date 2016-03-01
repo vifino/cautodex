@@ -77,12 +77,19 @@ return function()
 			end
 		end
 		if not found then
-			local f=io.popen("stat -Lc %F\\\t%s\\\t%Y "..escapist.escape.shell(var.root..path..file))
-			local fmt=f:read"*a"
-			local t,s,d=fmt:match"^([^\t]*)\t([^\t]*)\t(.*)\n$"
-			if not t then error(fmt) end
-			f:close()
-			local s,d=tonumber(s),tonumber(d)
+			local t, s, d
+			if (fs.isDir or io.isDir) and (fs.size or io.size) and (fs.modtime or io.modtime) then
+				t = (fs.isDir or io.isDir)(path..file) and "directory" or "regular file"
+				s = (fs.size or io.size)(path..file)
+				d = (fs.modtime or io.modtime)(path..file)
+			else
+				local f=io.popen("stat -Lc %F\\\t%s\\\t%Y "..escapist.escape.shell(var.root..path..file))
+				local fmt=f:read"*a"
+				t,s,d=fmt:match"^([^\t]*)\t([^\t]*)\t(.*)\n$"
+				if not t then error(fmt) end
+				f:close()
+				s,d=tonumber(s),tonumber(d) 
+			end
 			tbl(
 				tag"tr"(
 					tag"td"(
